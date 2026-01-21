@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!-- This template is for creating an Internet Draft using xml2rfc,
+     which is available here: http://xml.resource.org. -->
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!-- One method to get references from the online citation libraries.
+     There has to be one entity for each item to be referenced. 
+     An alternate method (rfc include) is described in the references. -->
+<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<!-- used by XSLT processors -->
+<!-- For a complete list and description of processing instructions (PIs), 
+     please see http://xml.resource.org/authoring/README.html. -->
+<!-- Below are generally applicable Processing Instructions (PIs) that most I-Ds might want to use.
+     (Here they are set differently than their defaults in xml2rfc v1.32) -->
+<?rfc strict="no" ?>
+<!-- give errors regarding ID-nits and DTD validation -->
+<!-- control the table of contents (ToC) -->
+<?rfc toc="yes"?>
+<!-- generate a ToC -->
+<?rfc tocdepth="4"?>
+<!-- the number of levels of subsections in ToC. default: 3 -->
+<!-- control references -->
+<?rfc symrefs="yes"?>
+<!-- use symbolic references tags, i.e, [RFC2119] instead of [1] -->
+<?rfc sortrefs="yes"?>
+<!-- sort the reference entries alphabetically -->
+<!-- control vertical white space 
+     (using these PIs as follows is recommended by the RFC Editor) -->
+<?rfc compact="no"?>
+<!-- Start each main section on a new page -->
+<?rfc subcompact="no"?>
+<!-- keep one blank line between list items -->
+<!-- end of list of popular I-D processing instructions -->
+<rfc category="info" docName="michalakopoulos-unipi-project-01" ipr="trust200902">
+  <!-- category values: std, bcp, info, exp, and historic
+     ipr values: full3667, noModification3667, noDerivatives3667
+     you can add the attributes updates="NNNN" and obsoletes="NNNN" 
+     they will automatically be output with "(if approved)" -->
+
+  <!-- ***** FRONT MATTER ***** -->
+  <front>
+    <!-- The abbreviated title is used in the page header - it is only necessary if the 
+         full title is longer than 39 characters -->
+
+    <title>Semester project for 2025</title>
+
+    <!-- add 'role="editor"' below for the editors if appropriate -->
+
+    <!-- Another author who claims to be an editor -->
+
+	<author fullname="Theodoros Michalakopoulos" initials="T.M." surname="Michalakopoulos">
+			<organization>University of Piraeus</organization>
+			<address>
+				<postal>
+					<street>Department of Digital Systems</street>
+					<!-- Reorder these if your country does things differently -->
+					<city>Piraeus</city>
+					<region/>
+					<code>18534</code>
+					<country>Greece</country>
+				</postal>
+				<email>teomic729@gmail.com</email>
+				<!-- uri and facsimile elements may also be added -->
+			</address>
+		</author>
+
+
+    <date year="2025" />
+
+    <area>Edu</area>
+
+    <workgroup>Education</workgroup>
+
+    <keyword>Edu</keyword>
+    <keyword>Project</keyword>
+
+    <!-- Keywords will be incorporated into HTML output
+         files in a meta tag but they have no effect on text or nroff
+         output. If you submit your draft to the RFC Editor, the
+         keywords will be used for the search engine. -->
+
+    <abstract>
+      <t>This document describes a lightweight binary protocol over TCP for performing simple mathematical operations such as multiplication, 
+      average, and vector subtraction. It is designed for simplicity, minimal overhead, and use in educational or constrained environments.</t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section title="Introduction">
+	<t>This protocol allows a client to connect to a server over TCP and request one of three operations. 
+    Each message consists of a binary-encoded header and body. The server replies with a binary-encoded response depending on the operation result or error.
+    </t>
+  
+	<t>The remainder of this document SHOULD be organized as follows. <xref target="Terminology"/> explains the terminology used in this document. <xref target="ProtoOverview"/> provides a high-level overview of the protocol.
+  <xref target="Client Headers"/> provides the details of the clients' protocol header. <xref target="Server Response Header"/> provides the details of the servers' response header.</t>
+  <section title="Requirements Language">
+    <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+  "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+  document are to be interpreted as described in <xref target="RFC2119" format="default">RFC2119</xref>.</t>
+  </section>
+	</section>
+	
+	<section anchor="Terminology" title="Terminology">
+
+	<t>This document uses the following terms:
+	<list style="hanging">
+    <t>Protocol - A pre-approved communication language between two end systems.</t>
+    <t>Server - The part of the communication protocol that receives the request. In this project the server is an analytical engine which performs 3 operations.</t>
+    <t>Client - The part of the communication protocol that starts the request. In this project the client is anyone who gives the server numbers to perform the operations.</t>
+    <t>byte - An 8-bit octet</t>
+  </list></t>
+    </section>
+
+	<section anchor="ProtoOverview" title="Protocol Overview">
+    <t><xref target="Exchange" /> provides a detailed high-level overview of the message exchange between the server and the client.</t>
+
+    <figure title="Message Exchange" anchor="Exchange"> 
+      <artwork align="center"><![CDATA[
+              Server                            Client
+              |                                  |
+              |     Some message from client     |
+              | <------------------------------- |
+              |                                  |
+              |    A response from the server    |
+              | -------------------------------> |
+]]></artwork></figure>
+
+  <section anchor="Port" title="Port" >
+    <t>This Protocol uses the Port 12345.</t>
+  </section>
+  </section>
+
+  
+
+	<section anchor="Client Headers" title="Protocol Header Format Client" >
+    <t>The following headers are required in order to satisfy all the requirements</t>
+    <t>Each header SHOULD be in a different subsection</t>
+	
+  <section title="Start of header">
+    <t>This is the start of the first message sent by the Client to initiate the communication process...(This is not the complete header!) </t>
+    <t>The following figure shows the message format.</t>
+    <t>Headers SHOULD be defined in ascii and each field explained in detail as follows:</t>
+    <figure title="Start of Header Format" anchor="RSHF"> <artwork align="center"><![CDATA[
+    
+    0                     1                             2                3                 4   (bytes)
+    #+--------------------+-----------------------------+----------------+-----------------+----
+    #| Operation Code     |          Count (N)          |      Padding (2bytes - zero)     |   
+    #+--------------------+-----------------------------+----------------------------------+----
+  
+    ]]></artwork></figure>
+    
+    
+    <t>
+    <list style="letters">
+      <t>Operation Code: (uses B format character)<list style="numbers">
+        <t>Multiplication of signed 16-bit integers.</t>
+        <t>Average of unsigned 16-bit integers.</t>
+        <t>Vector subtraction of unsigned 16-bit integers.</t>
+      </list></t>
+      <t>Count (N): The number of values to operate on. The server validates whether N is within acceptable bounds. (uses B format character)</t>
+    </list>
+    </t>
+  </section>
+
+  <section title="Header with Operation Code: 1">
+    <t>This is the full message sent by the Client to initiate the communication process for multiplication... </t>
+    <t>The following figure shows the full message format.</t>
+    <figure title="Multiplication Header Format" anchor="RSHF1"> <artwork align="center"><![CDATA[
+    
+    0                     1                             2                3                 4         5          6                    8                    10   (bytes)
+    #+--------------------+-----------------------------+----------------+-----------------+--------------------+--------------------+--------------------+--
+    #| Operation Code     |          Count (N)          |      Padding (2bytes - zero)     |         h          |         h          |          h         | ...n times   
+    #+--------------------+-----------------------------+----------------------------------+--------------------+--------------------+--------------------+--
+  
+    ]]></artwork></figure>
+    <t>N SHOULD be between 2 and 10.</t>
+    <t>The numbers SHOULD be between -5 and 5.</t>
+    
+  </section>
+
+  <section title="Header with Operation Code: 2">
+    <t>This is the full message sent by the Client to initiate the communication process for finding the average... </t>
+    <t>The following figure shows the full message format.</t>
+    <figure title="Average of numbers Header Format" anchor="RSHF2"> <artwork align="center"><![CDATA[
+    
+    0                     1                             2                3                 4         5          6                    8                    10   (bytes)
+    #+--------------------+-----------------------------+----------------+-----------------+--------------------+--------------------+--------------------+--
+    #| Operation Code     |          Count (N)          |      Padding (2bytes - zero)     |         H          |         H          |          H         | ...n times   
+    #+--------------------+-----------------------------+----------------------------------+--------------------+--------------------+--------------------+--
+  
+    ]]></artwork></figure>
+    
+    <t>N SHOULD be between 2 and 20.</t>
+    <t>The numbers SHOULD be between 0 and 200.</t>
+    
+  </section>
+
+  <section title="Header with Operation Code: 3">
+    <t>This is the full message sent by the Client to initiate the communication process for subtraction... </t>
+    <t>The following figure shows the full message format.</t>
+    <figure title="Subtraction Header Format" anchor="RSHF3"> <artwork align="center"><![CDATA[
+    
+    0                     1                             2                3                 4         5          6                    8                    10   (bytes)
+    #+--------------------+-----------------------------+----------------+-----------------+--------------------+--------------------+--------------------+--
+    #| Operation Code     |          Count (N)          |      Padding (2bytes - zero)     |         H          |         H          |          H         | ...2*n times   
+    #+--------------------+-----------------------------+----------------------------------+--------------------+--------------------+--------------------+--
+  
+    ]]></artwork></figure>
+    
+    <t>N SHOULD be between 2 and 10.</t>
+    <t>The numbers SHOULD be between 0 and 60000.</t>
+    
+  </section>
+
+  </section>
+
+  <section anchor="Server Response Header" title="Server Response Header">
+    <t>These are the response headers for every operation</t>
+
+
+  <section anchor="Response Header for Operations Codes: 1,2" title="Response Header for Operations Codes: 1,2">
+    <t>The following figure shows the full message format.</t>
+    <figure title="Response Header for Operations Codes: 1,2" anchor="RSHF4"> <artwork align="center"><![CDATA[
+    
+    0                     1                             2                                  4                                  8   (bytes)
+    #+--------------------+-----------------------------+----------------------------------+----------------------------------+
+    #|    Exit Code: 0    |    1 (Returns 1 result)     |            Padding(2bytes)       |          result (f)              |                  
+    #+--------------------+-----------------------------+----------------------------------+----------------------------------+
+  
+    ]]></artwork></figure>
+
+
+    <t>
+    <list style="letters">
+      <t>Exit Code: 0, everything worked properly, uses B format character</t>
+      <t>1: result is returned, uses B format character</t>
+      <t>The result uses f format character</t>
+    </list>
+    </t>
+  </section>
+
+  <section anchor="Response Header for Operations Code: 3" title="Response Header for Operations Code: 3">
+    <t>The following figure shows the full message format.</t>
+    <figure title="Response Header for Operations Code: 3" anchor="RSHF5"> <artwork align="center"><![CDATA[
+    
+    0                     1                             2                                  4            8           12   (bytes)
+    #+--------------------+-----------------------------+----------------------------------+------------+-----------+--
+    #|    Exit Code: 0    |    n (Returns n result)     |            Padding(2bytes)       |     i      |      i    |   ...n times                         
+    #+--------------------+-----------------------------+----------------------------------+------------+-----------+--
+  
+    ]]></artwork></figure>
+
+
+    <t>
+    <list style="letters">
+      <t>Exit Code: 0, everything worked properly, uses B format character</t>
+      <t>n results are returned, uses B format character</t>
+      <t>Results use i format character</t>
+    </list>
+    </t>
+  </section>
+
+
+  <section anchor="Response Header for Errors" title="Response Header for Errors">
+    <t>The following figure shows the full message format.</t>
+    <figure title="Response Header for Errors" anchor="RSHF6"> <artwork align="center"><![CDATA[
+    
+    0                     1                             2                                  4         8   (bytes)
+    #+--------------------+-----------------------------+----------------------------------+---------+
+    #|    Exit Code(1-5)  |    0 (Returns no result)    |            Padding(2bytes)       |  0.0(f) |                
+    #+--------------------+-----------------------------+----------------------------------+---------+
+  
+    ]]></artwork></figure>
+
+
+    <t>
+    <list style="letters">
+      <t>Exit Code:               (uses B format character) <list style="numbers">
+        <t>Wrong count of numbers (N is wrong).</t>
+        <t>A number is bigger than the allowed limit.</t>
+        <t>A number is smaller than the allowed limit.</t>
+        <t>Connection closed prematurely, EOFError.</t>
+        <t>Unknown Error.</t>
+      </list></t>
+      <t>0: No result is returned (uses B format character)</t>
+      <t>0.0: float number to reach 8 bytes, the client recieves 8 bytes.</t>
+    </list>
+    </t>
+  </section>
+
+  </section>
+
+
+
+  <section anchor="Acknowledgements" title="Acknowledgements">
+    <t>The authors would like to acknowledge anyone who might use this protocol.</t>
+  </section>
+
+
+    <!-- Possibly a 'Contributors' section ... -->
+
+    <section anchor="IANA" title="IANA Considerations">
+      <t>This memo makes no requests to IANA.</t>
+
+    </section>
+    <section anchor="Security" title="Security Considerations">
+      <t>There is no security in this specification. This is a prototype and all messages should be sent in cleartext over the wire.</t>
+      <t>This is a VERY unsecure protocol. Please do not implement.</t>
+    </section>
+  </middle>
+
+  <!--  *****BACK MATTER ***** -->
+
+  <back>
+    <!-- References split into informative and normative -->
+
+    <!-- There are 2 ways to insert reference entries from the citation libraries:
+     1. define an ENTITY at the top, and use "ampersand character"RFC2629; here (as shown)
+     2. simply use a PI "less than character"?rfc include="reference.RFC.2119.xml"?> here
+        (for I-Ds: include="reference.I-D.narten-iana-considerations-rfc2434bis.xml")
+
+     Both are cited textually in the same manner: by using xref elements.
+     If you use the PI option, xml2rfc will, by default, try to find included files in the same
+     directory as the including file. You can also define the XML_LIBRARY environment variable
+     with a value containing a set of directories to search.  These can be either in the local
+     filing system or remote ones accessed by http (http://domain/dir/... ).-->
+    <references title="Informative References">
+      &RFC2119;
+    </references>
+  </back>
+</rfc>
