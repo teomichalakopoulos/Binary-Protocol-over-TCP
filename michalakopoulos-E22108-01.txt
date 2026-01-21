@@ -1,0 +1,392 @@
+
+
+
+
+Education                                           T.M. Michalakopoulos
+Internet-Draft                                     University of Piraeus
+Intended status: Informational                             30 April 2025
+Expires: 1 November 2025
+
+
+                       Semester project for 2025
+                    michalakopoulos-unipi-project-01
+
+Abstract
+
+   This document describes a lightweight binary protocol over TCP for
+   performing simple mathematical operations such as multiplication,
+   average, and vector subtraction.  It is designed for simplicity,
+   minimal overhead, and use in educational or constrained environments.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 1 November 2025.
+
+Copyright Notice
+
+   Copyright (c) 2025 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+
+
+
+
+Michalakopoulos          Expires 1 November 2025                [Page 1]
+
+Internet-Draft          Semester project for 2025             April 2025
+
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+     1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   2
+   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   2
+   3.  Protocol Overview . . . . . . . . . . . . . . . . . . . . . .   3
+     3.1.  Port  . . . . . . . . . . . . . . . . . . . . . . . . . .   3
+   4.  Protocol Header Format Client . . . . . . . . . . . . . . . .   3
+     4.1.  Start of header . . . . . . . . . . . . . . . . . . . . .   3
+     4.2.  Header with Operation Code: 1 . . . . . . . . . . . . . .   4
+     4.3.  Header with Operation Code: 2 . . . . . . . . . . . . . .   4
+     4.4.  Header with Operation Code: 3 . . . . . . . . . . . . . .   5
+   5.  Server Response Header  . . . . . . . . . . . . . . . . . . .   5
+     5.1.  Response Header for Operations Codes: 1,2 . . . . . . . .   5
+     5.2.  Response Header for Operations Code: 3  . . . . . . . . .   6
+     5.3.  Response Header for Errors  . . . . . . . . . . . . . . .   6
+   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
+   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
+   8.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
+   9.  Informative References  . . . . . . . . . . . . . . . . . . .   7
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   7
+
+1.  Introduction
+
+   This protocol allows a client to connect to a server over TCP and
+   request one of three operations.  Each message consists of a binary-
+   encoded header and body.  The server replies with a binary-encoded
+   response depending on the operation result or error.
+
+   The remainder of this document SHOULD be organized as follows.
+   Section 2 explains the terminology used in this document.  Section 3
+   provides a high-level overview of the protocol.  Section 4 provides
+   the details of the clients' protocol header.  Section 5 provides the
+   details of the servers' response header.
+
+1.1.  Requirements Language
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in RFC2119 [RFC2119].
+
+2.  Terminology
+
+   This document uses the following terms:
+
+      Protocol - A pre-approved communication language between two end
+      systems.
+
+
+
+
+Michalakopoulos          Expires 1 November 2025                [Page 2]
+
+Internet-Draft          Semester project for 2025             April 2025
+
+
+      Server - The part of the communication protocol that receives the
+      request.  In this project the server is an analytical engine which
+      performs 3 operations.
+
+      Client - The part of the communication protocol that starts the
+      request.  In this project the client is anyone who gives the
+      server numbers to perform the operations.
+
+      byte - An 8-bit octet
+
+3.  Protocol Overview
+
+   Figure 1 provides a detailed high-level overview of the message
+   exchange between the server and the client.
+
+                        Server                            Client
+                        |                                  |
+                        |     Some message from client     |
+                        | <------------------------------- |
+                        |                                  |
+                        |    A response from the server    |
+                        | -------------------------------> |
+
+                         Figure 1: Message Exchange
+
+3.1.  Port
+
+   This Protocol uses the Port 12345.
+
+4.  Protocol Header Format Client
+
+   The following headers are required in order to satisfy all the
+   requirements
+
+   Each header SHOULD be in a different subsection
+
+4.1.  Start of header
+
+   This is the start of the first message sent by the Client to initiate
+   the communication process...(This is not the complete header!)
+
+   The following figure shows the message format.
+
+   Headers SHOULD be defined in ascii and each field explained in detail
+   as follows:
+
+
+
+
+
+
+Michalakopoulos          Expires 1 November 2025                [Page 3]
+
+Internet-Draft          Semester project for 2025             April 2025
+
+
+    0                     1                             2                3                 4   (bytes)
+    #+--------------------+-----------------------------+----------------+-----------------+----
+    #| Operation Code     |          Count (N)          |      Padding (2bytes - zero)     |
+    #+--------------------+-----------------------------+----------------------------------+----
+
+
+                   Figure 2: Start of Header Format
+
+   a.  Operation Code: (uses B format character)
+
+       1.  Multiplication of signed 16-bit integers.
+
+       2.  Average of unsigned 16-bit integers.
+
+       3.  Vector subtraction of unsigned 16-bit integers.
+
+   b.  Count (N): The number of values to operate on.  The server
+       validates whether N is within acceptable bounds. (uses B format
+       character)
+
+4.2.  Header with Operation Code: 1
+
+   This is the full message sent by the Client to initiate the
+   communication process for multiplication...
+
+   The following figure shows the full message format.
+
+
+    0                     1                             2                3                 4         5          6                    8                    10   (bytes)
+    #+--------------------+-----------------------------+----------------+-----------------+--------------------+--------------------+--------------------+--
+    #| Operation Code     |          Count (N)          |      Padding (2bytes - zero)     |         h          |         h          |          h         | ...n times
+    #+--------------------+-----------------------------+----------------------------------+--------------------+--------------------+--------------------+--
+
+
+                Figure 3: Multiplication Header Format
+
+   N SHOULD be between 2 and 10.
+
+   The numbers SHOULD be between -5 and 5.
+
+4.3.  Header with Operation Code: 2
+
+   This is the full message sent by the Client to initiate the
+   communication process for finding the average...
+
+   The following figure shows the full message format.
+
+
+
+
+
+Michalakopoulos          Expires 1 November 2025                [Page 4]
+
+Internet-Draft          Semester project for 2025             April 2025
+
+
+    0                     1                             2                3                 4         5          6                    8                    10   (bytes)
+    #+--------------------+-----------------------------+----------------+-----------------+--------------------+--------------------+--------------------+--
+    #| Operation Code     |          Count (N)          |      Padding (2bytes - zero)     |         H          |         H          |          H         | ...n times
+    #+--------------------+-----------------------------+----------------------------------+--------------------+--------------------+--------------------+--
+
+
+              Figure 4: Average of numbers Header Format
+
+   N SHOULD be between 2 and 20.
+
+   The numbers SHOULD be between 0 and 200.
+
+4.4.  Header with Operation Code: 3
+
+   This is the full message sent by the Client to initiate the
+   communication process for subtraction...
+
+   The following figure shows the full message format.
+
+
+    0                     1                             2                3                 4         5          6                    8                    10   (bytes)
+    #+--------------------+-----------------------------+----------------+-----------------+--------------------+--------------------+--------------------+--
+    #| Operation Code     |          Count (N)          |      Padding (2bytes - zero)     |         H          |         H          |          H         | ...2*n times
+    #+--------------------+-----------------------------+----------------------------------+--------------------+--------------------+--------------------+--
+
+
+                 Figure 5: Subtraction Header Format
+
+   N SHOULD be between 2 and 10.
+
+   The numbers SHOULD be between 0 and 60000.
+
+5.  Server Response Header
+
+   These are the response headers for every operation
+
+5.1.  Response Header for Operations Codes: 1,2
+
+   The following figure shows the full message format.
+
+
+    0                     1                             2                                  4                                  8   (bytes)
+    #+--------------------+-----------------------------+----------------------------------+----------------------------------+
+    #|    Exit Code: 0    |    1 (Returns 1 result)     |            Padding(2bytes)       |          result (f)              |
+    #+--------------------+-----------------------------+----------------------------------+----------------------------------+
+
+
+         Figure 6: Response Header for Operations Codes: 1,2
+
+
+
+Michalakopoulos          Expires 1 November 2025                [Page 5]
+
+Internet-Draft          Semester project for 2025             April 2025
+
+
+   a.  Exit Code: 0, everything worked properly, uses B format character
+
+   b.  1: result is returned, uses B format character
+
+   c.  The result uses f format character
+
+5.2.  Response Header for Operations Code: 3
+
+   The following figure shows the full message format.
+
+
+    0                     1                             2                                  4            8           12   (bytes)
+    #+--------------------+-----------------------------+----------------------------------+------------+-----------+--
+    #|    Exit Code: 0    |    n (Returns n result)     |            Padding(2bytes)       |     i      |      i    |   ...n times
+    #+--------------------+-----------------------------+----------------------------------+------------+-----------+--
+
+
+           Figure 7: Response Header for Operations Code: 3
+
+   a.  Exit Code: 0, everything worked properly, uses B format character
+
+   b.  n results are returned, uses B format character
+
+   c.  Results use i format character
+
+5.3.  Response Header for Errors
+
+   The following figure shows the full message format.
+
+
+    0                     1                             2                                  4         8   (bytes)
+    #+--------------------+-----------------------------+----------------------------------+---------+
+    #|    Exit Code(1-5)  |    0 (Returns no result)    |            Padding(2bytes)       |  0.0(f) |
+    #+--------------------+-----------------------------+----------------------------------+---------+
+
+
+                 Figure 8: Response Header for Errors
+
+   a.  Exit Code: (uses B format character)
+
+       1.  Wrong count of numbers (N is wrong).
+
+       2.  A number is bigger than the allowed limit.
+
+       3.  A number is smaller than the allowed limit.
+
+       4.  Connection closed prematurely, EOFError.
+
+
+
+
+Michalakopoulos          Expires 1 November 2025                [Page 6]
+
+Internet-Draft          Semester project for 2025             April 2025
+
+
+       5.  Unknown Error.
+
+   b.  0: No result is returned (uses B format character)
+
+   c.  0.0: float number to reach 8 bytes, the client recieves 8 bytes.
+
+6.  Acknowledgements
+
+   The authors would like to acknowledge anyone who might use this
+   protocol.
+
+7.  IANA Considerations
+
+   This memo makes no requests to IANA.
+
+8.  Security Considerations
+
+   There is no security in this specification.  This is a prototype and
+   all messages should be sent in cleartext over the wire.
+
+   This is a VERY unsecure protocol.  Please do not implement.
+
+9.  Informative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
+
+Author's Address
+
+   Theodoros Michalakopoulos
+   University of Piraeus
+   Department of Digital Systems
+   18534 Piraeus
+   Greece
+   Email: teomic729@gmail.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Michalakopoulos          Expires 1 November 2025                [Page 7]
